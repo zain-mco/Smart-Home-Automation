@@ -1,0 +1,26 @@
+{
+  "name": "virtual-esp32-device",
+  "version": "1.0.0",
+  "description": "Virtual ESP32 device simulator for testing dashboard without hardware",
+  "main": "virtual-device.js",
+  "scripts": {
+    "start": "node virtual-device.js",
+    "dev": "nodemon virtual-device.js"
+  },
+  "keywords": [
+    "esp32",
+    "iot",
+    "firebase",
+    "simulator"
+  ],
+  "author": "Smart Home Automation",
+  "license": "MIT",
+  "dependencies": {
+    "firebase-admin": "^11.11.0",
+    "open": "^8.4.2",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null",
+    "devices": {
+      ".indexOn": ["status"]
+    },
+    "sensors": {
+      ".indexOn": ["lastUpdate"]
+    }
+  }
+}

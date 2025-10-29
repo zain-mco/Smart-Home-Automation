@@ -1,0 +1,100 @@
+{
+  "devices": {
+    "lamp1": {
+      "name": "Living Room Lamp",
+      "status": "off",
+      "type": "light",
+      "room": "living_room",
+      "power": 60,
+      "lastUpdate": 0
+    },
+    "fan1": {
+      "name": "Bedroom Fan",
+      "status": "off",
+      "type": "fan",
+      "room": "bedroom",
+      "speed": 3,
+      "lastUpdate": 0
+    },
+    "ac1": {
+      "name": "Air Conditioner",
+      "status": "off",
+      "type": "ac",
+      "room": "bedroom",
+      "temperature": 24,
+      "mode": "cool",
+      "lastUpdate": 0
+    }
+  },
+  "sensors": {
+    "temperature": 26.5,
+    "humidity": 45,
+    "lastUpdate": 0,
+    "location": "living_room"
+  },
+  "rooms": {
+    "living_room": {
+      "name": "Living Room",
+      "devices": ["lamp1"],
+      "sensors": ["sensor1"]
+    },
+    "bedroom": {
+      "name": "Bedroom",
+      "devices": ["fan1", "ac1"],
+      "sensors": []
+    },
+    "kitchen": {
+      "name": "Kitchen",
+      "devices": [],
+      "sensors": []
+    }
+  },
+  "automation": {
+    "rules": {
+      "rule1": {
+        "name": "Evening Lights",
+        "enabled": false,
+        "trigger": {
+          "type": "time",
+          "time": "18:00"
+        },
+        "action": {
+          "device": "lamp1",
+          "status": "on"
+        }
+      },
+      "rule2": {
+        "name": "Temperature Control",
+        "enabled": false,
+        "trigger": {
+          "type": "sensor",
+          "sensor": "temperature",
+          "condition": ">",
+          "value": 30
+        },
+        "action": {
+          "device": "ac1",
+          "status": "on"
+        }
+      }
+    }
+  },
+  "settings": {
+    "system": {
+      "name": "My Smart Home",
+      "timezone": "UTC",
+      "temperatureUnit": "celsius",
+      "notifications": true
+    },
+    "dashboard": {
+      "theme": "light",
+      "language": "en",
+      "refreshInterval": 2000
+    }
+  },
+  "logs": {
+    "deviceLogs": {},
+    "sensorLogs": {},
+    "systemLogs": {}
+  }
+}
