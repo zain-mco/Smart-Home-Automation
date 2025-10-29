@@ -1,5 +1,6 @@
 // API route for sensor data
-const { initializeFirebase } = require('./firebase-config');
+const path = require('path');
+const { initializeFirebase } = require(path.join(__dirname, 'firebase-config'));
 
 module.exports = async (req, res) => {
   // Enable CORS

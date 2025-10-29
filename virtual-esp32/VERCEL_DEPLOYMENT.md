@@ -273,3 +273,126 @@ virtual-esp32/
 5. ✅ Monitor logs and usage in Vercel dashboard
 
 **Need help?** Check the [Vercel Documentation](https://vercel.com/docs) or Firebase documentation.
+
+
+# خطوات رفع المشروع على Vercel 🚀
+
+## الخطوات المطلوبة منك:
+
+### 1️⃣ تحضير بيانات Firebase
+
+افتح ملف `serviceAccountKey.json` وانسخ **كل** محتوياته (من `{` للـ `}`)
+
+---
+
+### 2️⃣ رفع التعديلات على GitHub
+
+```bash
+git add .
+git commit -m "Add Vercel API deployment"
+git push
+```
+
+---
+
+### 3️⃣ ربط المشروع بـ Vercel
+
+1. اذهب إلى [vercel.com/new](https://vercel.com/new)
+2. اختر **Import Git Repository**
+3. اختر الريبو: `Smart-Home-Automation`
+4. في **Root Directory** حط: `virtual-esp32`
+5. اضغط **Continue**
+
+---
+
+### 4️⃣ إضافة Environment Variables (مهم جداً!)
+
+قبل ما تضغط Deploy:
+
+1. اضغط على **Environment Variables**
+2. أضف متغير جديد:
+   - **Name:** `FIREBASE_SERVICE_ACCOUNT`
+   - **Value:** الصق كل محتوى ملف `serviceAccountKey.json`
+   - اضغط **Add**
+
+3. (اختياري) أضف متغير تاني:
+   - **Name:** `FIREBASE_DATABASE_URL`
+   - **Value:** `https://smart-home-automation-641fc-default-rtdb.firebaseio.com`
+   - اضغط **Add**
+
+---
+
+### 5️⃣ Deploy
+
+اضغط **Deploy** وانتظر 2-3 دقايق
+
+---
+
+## ✅ بعد ما ينجح الرفع:
+
+### تجربة الـ API:
+
+1. افتح الرابط اللي هيعطيك ياه Vercel
+2. هتلاقي صفحة فيها أزرار للتجربة
+3. اضغط **Test Initialize** - لازم يشتغل ويرجع success
+4. جرب باقي الأزرار
+
+### ربط الـ Dashboard بالـ API:
+
+في الـ React dashboard، استخدم الـ API بدل الـ WebSocket:
+
+```javascript
+const API_BASE = 'https://your-project.vercel.app/api';
+
+// Initialize
+await fetch(`${API_BASE}/initialize`, { method: 'POST' });
+
+// Get devices
+const response = await fetch(`${API_BASE}/devices`);
+const data = await response.json();
+
+// Update device
+await fetch(`${API_BASE}/devices`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ deviceId: 'lamp1', status: 'on' })
+});
+```
+
+---
+
+## 🔍 لو حصلت مشكلة:
+
+### Error: Firebase credentials missing
+
+**الحل:** تأكد إنك حطيت `FIREBASE_SERVICE_ACCOUNT` في Environment Variables
+
+1. اذهب لـ Vercel Dashboard
+2. Settings → Environment Variables
+3. تأكد إن المتغير موجود
+4. Redeploy المشروع
+
+---
+
+## 📊 الـ API Endpoints المتاحة:
+
+| Method | Endpoint | الوصف |
+|--------|----------|-------|
+| POST | `/api/initialize` | تهيئة Firebase بالبيانات الأولية |
+| GET | `/api/devices` | جلب حالة جميع الأجهزة |
+| POST | `/api/devices` | تحديث حالة جهاز معين |
+| GET | `/api/sensors` | جلب قراءات الحساسات |
+| POST | `/api/sensors` | توليد قراءات جديدة للحساسات |
+
+---
+
+## ملاحظات مهمة:
+
+- ✅ الـ WebSocket تم إزالته (مش مدعوم على Vercel)
+- ✅ التحديثات التلقائية للحساسات تم إزالتها (استخدم API calls بدلاً منها)
+- ✅ يمكنك استخدام Firebase Realtime Listeners في الـ Dashboard للتحديثات الفورية
+- ✅ الملف الأصلي `virtual-device.js` لسه موجود للتطوير المحلي
+
+---
+
+للتفاصيل الكاملة، اقرأ: `VERCEL_DEPLOYMENT.md`
