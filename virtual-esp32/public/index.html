@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual ESP32 API - Vercel Deployment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .status {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #10b981;
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        .endpoint {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .endpoint h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-right: 10px;
+        }
+        .get { background: #10b981; color: white; }
+        .post { background: #f59e0b; color: white; }
+        code {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #5568d3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 Virtual ESP32 API</h1>
+        <p class="subtitle">Firebase-Connected IoT Device Simulator (Serverless)</p>
+        <span class="status">● API Running on Vercel</span>
+
+        <div class="warning">
+            <strong>⚠️ Note:</strong> This is a serverless API deployment. Real-time WebSocket connections are not supported. 
+            Use the API endpoints below to interact with Firebase.
+        </div>
+
+        <h2 style="color: #667eea; margin: 30px 0 15px 0;">📡 Available Endpoints</h2>
+
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> Initialize Firebase</h3>
+            <code>/api/initialize</code>
+            <p style="margin-top: 10px;">Sets up initial device and sensor data in Firebase.</p>
+            <button class="button" onclick="testInitialize()">Test Initialize</button>
+        </div>
+
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> Get All Devices</h3>
+            <code>/api/devices</code>
+            <p style="margin-top: 10px;">Retrieves current status of all devices.</p>
+            <button class="button" onclick="testGetDevices()">Test Get Devices</button>
+        </div>
+
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> Update Device</h3>
+            <code>/api/devices</code>
+            <p style="margin-top: 10px;">Update device status.</p>
+            <div class="code-block">POST Body:
+{
+  "deviceId": "lamp1",
+  "status": "on"
+}</div>
+            <button class="button" onclick="testUpdateDevice('lamp1', 'on')">Turn Lamp ON</button>
+            <button class="button" onclick="testUpdateDevice('lamp1', 'off')">Turn Lamp OFF</button>
+        </div>
+
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> Get Sensor Data</h3>
+            <code>/api/sensors</code>
+            <p style="margin-top: 10px;">Retrieves current sensor readings.</p>
+            <button class="button" onclick="testGetSensors()">Test Get Sensors</button>
+        </div>
+
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> Update Sensors</h3>
+            <code>/api/sensors</code>
+            <p style="margin-top: 10px;">Simulates new sensor readings.</p>
+            <button class="button" onclick="testUpdateSensors()">Test Update Sensors</button>
+        </div>
+
+        <div id="result"></div>
+
+        <h2 style="color: #667eea; margin: 30px 0 15px 0;">🚀 Integration</h2>
+        <p>Connect your dashboard to these API endpoints:</p>
+        <div class="code-block">const API_BASE = 'https://your-deployment.vercel.app/api';
+
+// Initialize
+await fetch(`${API_BASE}/initialize`, { method: 'POST' });
+
+// Get devices
+const devices = await fetch(`${API_BASE}/devices`).then(r => r.json());
+
+// Update device
+await fetch(`${API_BASE}/devices`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ deviceId: 'lamp1', status: 'on' })
+});</div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin + '/api';
+
+        function showResult(data, success = true) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.style.background = success ? '#d1fae5' : '#fee2e2';
+            resultDiv.style.borderLeft = success ? '4px solid #10b981' : '4px solid #ef4444';
+            resultDiv.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+        }
+
+        async function testInitialize() {
+            try {
+                const response = await fetch(`${API_BASE}/initialize`, { 
+                    method: 'POST' 
+                });
+                const data = await response.json();
+                showResult(data, data.success);
+            } catch (error) {
+                showResult({ error: error.message }, false);
+            }
+        }
+
+        async function testGetDevices() {
+            try {
+                const response = await fetch(`${API_BASE}/devices`);
+                const data = await response.json();
+                showResult(data, data.success);
+            } catch (error) {
+                showResult({ error: error.message }, false);
+            }
+        }
+
+        async function testUpdateDevice(deviceId, status) {
+            try {
+                const response = await fetch(`${API_BASE}/devices`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ deviceId, status })
+                });
+                const data = await response.json();
+                showResult(data, data.success);
+            } catch (error) {
+                showResult({ error: error.message }, false);
+            }
+        }
+
+        async function testGetSensors() {
+            try {
+                const response = await fetch(`${API_BASE}/sensors`);
+                const data = await response.json();
+                showResult(data, data.success);
+            } catch (error) {
+                showResult({ error: error.message }, false);
+            }
+        }
+
+        async function testUpdateSensors() {
+            try {
+                const response = await fetch(`${API_BASE}/sensors`, { 
+                    method: 'POST' 
+                });
+                const data = await response.json();
+                showResult(data, data.success);
+            } catch (error) {
+                showResult({ error: error.message }, false);
+            }
+        }
+    </script>
+</body>
+</html>

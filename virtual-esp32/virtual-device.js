@@ -30,11 +30,44 @@ try {
 // Firebase Console → Project Settings → Service Accounts → Generate New Private Key
 // Save as 'serviceAccountKey.json' in this directory
 
-const serviceAccount = require('./serviceAccountKey.json');
+function loadServiceAccountFromEnv() {
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    const parsed = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    if (parsed.private_key) {
+      parsed.private_key = parsed.private_key.replace(/\\n/g, '\n');
+    }
+    return parsed;
+  }
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  if (projectId && clientEmail && privateKey) {
+    return {
+      project_id: projectId,
+      client_email: clientEmail,
+      private_key: privateKey.replace(/\\n/g, '\n')
+    };
+  }
+  return null;
+}
+
+function getServiceAccount() {
+  const envAccount = loadServiceAccountFromEnv();
+  if (envAccount) {
+    return envAccount;
+  }
+  const keyPath = path.join(__dirname, 'serviceAccountKey.json');
+  if (fs.existsSync(keyPath)) {
+    return require(keyPath);
+  }
+  throw new Error('Firebase service account credentials are missing.');
+}
+
+const serviceAccount = getServiceAccount();
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://smart-home-automation-641fc-default-rtdb.firebaseio.com"
+  databaseURL: process.env.FIREBASE_DATABASE_URL || "https://smart-home-automation-641fc-default-rtdb.firebaseio.com"
 });
 
 const db = admin.database();
