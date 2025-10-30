@@ -93,8 +93,8 @@ function Login({ onLogin, error }) {
 
         <div className="text-center text-sm text-gray-500">
           <p>Demo credentials:</p>
-          <p className="font-mono text-xs mt-1">email: demo@smarthome.com</p>
-          <p className="font-mono text-xs">password: demo123</p>
+          <p className="font-mono text-xs mt-1">email: zain@smarthome.com</p>
+          <p className="font-mono text-xs">password: Zain123456789</p>
         </div>
       </div>
     </div>

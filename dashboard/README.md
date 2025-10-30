@@ -78,8 +78,8 @@ dashboard/
 ## 🔐 Authentication
 
 Default demo credentials:
-- Email: `demo@smarthome.com`
-- Password: `demo123`
+- Email: `Zain@smarthome.com`
+- Password: `Zain123456789`
 
 To add more users, use Firebase Console → Authentication → Add User
 
